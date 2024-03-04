@@ -25,6 +25,19 @@ C_ID = os.getenv('C_ID')
 C_PW = os.getenv('C_PW')
 
 
+def get_current_page_data(cur_page: int, cur_year: int):
+    """
+    크롤링 코드.
+
+    if disabled를 발견했다면
+        next_index = cur_page + 1 반환
+
+    
+    리턴값
+    현재 크롤링한 데이터, next_index, cur_year
+    """
+
+
 if __name__ == "__main__":
     
     options = webdriver.ChromeOptions()
@@ -51,9 +64,12 @@ if __name__ == "__main__":
     # for i in range(2024, 2018, -1):
     #     print(i)
     url_year = 'https://mc.coupang.com/ssr/desktop/order/list?orderType=ALL&requestYear=2024'
+    # url_year = 'https://mc.coupang.com/ssr/desktop/order/list?orderType=ALL&pageIndex=1&requestYear=2024'
     driver.get(url_year)
     time.sleep(0.3)
 
+    #############################################################################
+    # TODO:함수로 바꾸기
     div_order_elements = driver.find_element(By.CLASS_NAME, "sc-qxzqk9-0.iQgKJk")
     time.sleep(0.3)
     print('주문목록 div 찾음.')
@@ -80,6 +96,17 @@ if __name__ == "__main__":
 
         print(product_name)
         print(product_price)
+    
+    # 현재 페이지에서 다음 버튼이 disabled일 경우 더이상 다음페이지로 넘어가지 않고 년도를 바꾼다.
+    # 다음 버튼 찾기
+    next_btn = div_order_elements.find_elements(By.CLASS_NAME, "sc-1k9quwu-0.fwNiMs.sc-1o307be-1.dTwpud")[1]
+    button_html = next_btn.get_attribute('outerHTML')
+    if 'disabled' in button_html:
+        print('마지막 페이지 입니다 !!')
+    else:
+        print('다음 페이지가 남아읻어요')
+        
+    #############################################################################
 
     driver.quit()
 
