@@ -77,7 +77,8 @@ def get_page_data(driver: webdriver.Chrome):
 
 
 def save_file(data: list):
-    with open('result.csv', 'w') as f:
+    today_str = datetime.today().strftime('%Y-%m-%d')
+    with open(f'result_{today_str}.csv', 'w') as f:
         wr = csv.writer(f)
         header = ['product_name', 'product_price', 'order_date', 'status']
         wr.writerow(header)
@@ -122,16 +123,16 @@ if __name__ == "__main__":
     # 년도별 주문목록
     for year in range(2024, 2019, -1):
     # for year in range(2024, 2023, -1):
-        print(f'year {year} crawling ... ')
+        print(f'<year {year}> crawling ... ')
         page_index = 0
         last_page = False
         while(not last_page):
-            print(f'page {page_index} crawling ...')
+            print(f' page {page_index} crawling ..')
             url_year = f'https://mc.coupang.com/ssr/desktop/order/list?orderType=ALL&pageIndex={page_index}&requestYear={year}'
             driver.get(url_year)
             time.sleep(0.3)
             last_page, data = get_page_data(driver=driver)
-            print(f'crawled data count: {len(data)}')
+            print(f' crawled data count: {len(data)}')
             result.extend(data)
             page_index += 1
     
@@ -154,4 +155,5 @@ TODO
 5. (완료) 각 날짜별로 첫번째 상품만 크롤링되고 있음!!!!
   5-1) 같은 날 2개 이상 구매했을 경우 가장 위의 상품 1개만 크롤링되는 경우 고치기 -> tr을 find_elements로 해서 반복문
 6. 배송완료날짜도 크롤링 데이터에 추가할지?
+7. README.md 파일 추가
 """
