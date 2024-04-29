@@ -57,12 +57,17 @@ def get_page_data(driver: webdriver.Chrome):
             hUzAOG = tr.find_elements(By.CSS_SELECTOR, "td")[0]
             # sc-ki5ja7-0 bQVZKC
             delivery_status = hUzAOG.find_element(By.CLASS_NAME, "sc-ki5ja7-1.krPkOP").text.split()[0]
-            a_tags = hUzAOG.find_elements(By.CSS_SELECTOR, "a")
-            product_name = a_tags[2].text
-            product_price = a_tags[4].find_element(By.CSS_SELECTOR, "span").text
-            processed_price = product_price.replace(' 원', '').replace(',', '')
-            processed_date = order_date.replace(' 주문', '')
-            result.append([product_name, processed_price, processed_date, delivery_status])
+
+            # sc-9cwg9-6 jBCCpd - 각 상품.
+            jBCCpd = hUzAOG.find_elements(By.CLASS_NAME, "sc-9cwg9-6.jBCCpd")
+            for product_in_jBCCpd in jBCCpd:
+                a_tags = product_in_jBCCpd.find_elements(By.CSS_SELECTOR, "a")
+                product_name = a_tags[1].text
+                product_price = a_tags[3].find_element(By.CSS_SELECTOR, "span").text
+                processed_price = product_price.replace(' 원', '').replace(',', '')
+                processed_date = order_date.replace(' 주문', '')
+                result.append([product_name, processed_price, processed_date, delivery_status])
+
     
     # 현재 페이지에서 다음 버튼이 disabled일 경우 이를 변수에 기록한다.
     # 다음 버튼 찾기
@@ -155,5 +160,6 @@ TODO
 5. (완료) 각 날짜별로 첫번째 상품만 크롤링되고 있음!!!!
   5-1) 같은 날 2개 이상 구매했을 경우 가장 위의 상품 1개만 크롤링되는 경우 고치기 -> tr을 find_elements로 해서 반복문
 6. 배송완료날짜도 크롤링 데이터에 추가할지?
-7. README.md 파일 추가
+7. (완료) README.md 파일 추가
+8. (완료) 같은 날 장바구니에 같이 담은 상품들의 경우 맨 첫번째만 크롤링됨. 
 """
